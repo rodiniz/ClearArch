@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <PackageId>CleanArch.TemplatePack</PackageId>
+    <PackageVersion>1.0.0</PackageVersion>
+    <Title>CleanArch Solution Templates</Title>
+    <Authors>CleanArch</Authors>
+    <Description>Multi-project .NET solution template modeled after the CleanArch layered architecture.</Description>
+    <PackageTags>dotnet-new;template;solution;aspnetcore;architecture</PackageTags>
+    <PackageType>Template</PackageType>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.TemplatePack.md</PackageReadmeFile>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)nupkg</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="CleanArch.LayeredSolution\**\*"
+             Exclude="CleanArch.LayeredSolution\**\bin\**;CleanArch.LayeredSolution\**\obj\**">
+      <Pack>true</Pack>
+      <PackagePath>content\CleanArch.LayeredSolution</PackagePath>
+    </Content>
+    <Content Include="README.TemplatePack.md">
+      <Pack>true</Pack>
+      <PackagePath>\</PackagePath>
+    </Content>
+  </ItemGroup>
+
+</Project>
