@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CleanArch.Application;
+using CleanArch.Application.Messaging.Configuration;
 using CleanArch.Infrastructure;
 using CleanArch.Infrastructure.Persistence;
 using Scalar.AspNetCore;
@@ -8,8 +9,15 @@ using Wolverine.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Host.UseWolverine(options =>
-    options.Discovery.IncludeAssembly(typeof(CleanArch.Application.DependencyInjection).Assembly));
+// Configure Wolverine as the service bus (replaces MassTransit)
+builder.Host.UseWolverine((context, options) =>
+{
+    // Auto-discovery of message handlers and events
+    options.Discovery.IncludeAssembly(typeof(CleanArch.Application.DependencyInjection).Assembly);
+    
+    // Apply messaging configuration
+    options.AddWolverineMessaging(context.Configuration);
+});
 
 builder.Services.AddWolverineHttp();
 builder.Services.AddOpenApi();
