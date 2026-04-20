@@ -124,3 +124,151 @@
 // OLD: cfg.AddRabbitMqMessageScheduler();
 // NEW: options.UseRabbitMq("localhost");
 */
+
+/**
+ * CONSUMING EVENTS FROM EXTERNAL SERVICES (e.g. Azure Service Bus)
+ * =================================================================
+ * 
+ * Scenario: An Azure Function (or any external service) publishes a message to
+ * an Azure Service Bus queue or topic, and this API needs to consume it.
+ * 
+ * KEY INSIGHT: The external service publishes a plain JSON message.
+ * Wolverine does NOT need to be the publisher — it only needs to be the consumer.
+ * You control the message contract (the C# record that maps to the JSON payload).
+ */
+
+// STEP 1 — Define the external message contract
+// -----------------------------------------------
+// Create a record that matches the JSON shape the external service publishes.
+// Place it in Application/Messaging/Events/ (or a dedicated ExternalEvents/ folder).
+//
+// namespace CleanArch.Application.Messaging.Events;
+//
+// // Matches the JSON body that the Azure Function sends to Service Bus
+// public record ExternalWorkItemApprovedEvent
+// {
+//     public int WorkItemId { get; init; }
+//     public string ApprovedBy { get; init; } = string.Empty;
+//     public DateTime ApprovedAt { get; init; }
+// }
+
+
+// STEP 2 — Write the handler
+// ---------------------------
+// Wolverine discovers it by convention (method named Handle/HandleAsync).
+// No interface needed — just a plain class in a scanned assembly.
+//
+// namespace CleanArch.Application.Messaging.Handlers;
+//
+// public class ExternalWorkItemApprovedHandler
+// {
+//     private readonly IWorkItemRepository _repository;
+//
+//     public ExternalWorkItemApprovedHandler(IWorkItemRepository repository)
+//         => _repository = repository;
+//
+//     public async Task Handle(ExternalWorkItemApprovedEvent @event, CancellationToken ct)
+//     {
+//         var workItem = await _repository.GetByIdAsync(@event.WorkItemId, ct);
+//         if (workItem is null) return;
+//
+//         workItem.Approve(@event.ApprovedBy, @event.ApprovedAt);
+//         await _repository.UpdateAsync(workItem, ct);
+//     }
+// }
+
+
+// STEP 3 — Register the Azure Service Bus listener in Program.cs
+// ---------------------------------------------------------------
+// Add the Wolverine.AzureServiceBus NuGet package, then configure the listener.
+//
+// builder.Host.UseWolverine((context, options) =>
+// {
+//     options.Discovery.IncludeAssembly(typeof(DependencyInjection).Assembly);
+//
+//     var asbConnectionString = context.Configuration["AzureServiceBus:ConnectionString"];
+//
+//     options.UseAzureServiceBus(asbConnectionString)
+//         // Listen to a queue:
+//         .AddListenerForQueue("work-items-approved")
+//
+//         // OR listen to a topic subscription:
+//         // .AddListenerForSubscription("work-items-topic", "api-subscription")
+//
+//         // Enable auto-provisioning (creates queue/topic if they don't exist)
+//         .AutoProvision();
+// });
+
+
+// STEP 4 — Map the queue message to the handler (message routing)
+// ---------------------------------------------------------------
+// Wolverine routes by C# type. For external messages, you must tell Wolverine
+// which type to deserialize the raw JSON into. Two options:
+
+// OPTION A — Attribute on the handler (simplest)
+// [WolverineHandler] // already discovered by convention, no attribute needed
+// The queue name maps to the handler automatically when there is only one handler
+// for that message type. Works out-of-the-box if the JSON property names match.
+
+// OPTION B — Explicit routing in UseWolverine (recommended for external messages)
+//
+// options.UseAzureServiceBus(asbConnectionString)
+//     .AddListenerForQueue("work-items-approved")
+//     .ConfigureDeadLetterQueue("work-items-approved-dlq", dlq =>
+//     {
+//         dlq.MaxDeliveryCount = 5;
+//     });
+//
+// options.ListenToAzureServiceBusQueue("work-items-approved")
+//     .DefaultIncomingMessage<ExternalWorkItemApprovedEvent>() // <-- explicit mapping
+//     .ProcessInline();  // or .ProcessingIsSequential() for ordered processing
+
+
+// STEP 5 — appsettings.json
+// -------------------------
+// {
+//   "AzureServiceBus": {
+//     "ConnectionString": "Endpoint=sb://<namespace>.servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=..."
+//   }
+// }
+//
+// For production, use Managed Identity instead of a connection string:
+// options.UseAzureServiceBusWithManagedIdentity("sb://<namespace>.servicebus.windows.net")
+
+
+// STEP 6 — Error handling & dead-letter queue
+// --------------------------------------------
+// Configure retry behaviour specific to external messages, since you don't
+// control the publisher and can't ask it to resend.
+//
+// options.Handlers.ForMessage<ExternalWorkItemApprovedEvent>()
+//     .RetryOnFailure(attempts: 3)
+//     .OnAnyException()
+//     .Wait(TimeSpan.FromSeconds(1))
+//     .ThenMoveToErrorQueue();   // sends to the DLQ after exhausting retries
+
+
+// STEP 7 — Idempotency (important for external consumers)
+// -------------------------------------------------------
+// External services may resend messages (at-least-once delivery).
+// Guard against duplicate processing with a simple idempotency check:
+//
+// public async Task Handle(ExternalWorkItemApprovedEvent @event, CancellationToken ct)
+// {
+//     var alreadyProcessed = await _repository.WasApprovalProcessedAsync(@event.WorkItemId, ct);
+//     if (alreadyProcessed) return;   // idempotency guard
+//
+//     // ... process normally
+// }
+
+
+// SUMMARY — Minimal checklist for external Service Bus events
+// -----------------------------------------------------------
+// [ ] Add NuGet: Wolverine.AzureServiceBus
+// [ ] Define a record matching the external JSON payload
+// [ ] Write a handler class with a Handle(ExternalEvent) method
+// [ ] Call .UseAzureServiceBus(...).AddListenerForQueue("queue-name") in UseWolverine
+// [ ] Map the queue to the message type with .DefaultIncomingMessage<T>() if needed
+// [ ] Add retry + DLQ policy for resilience
+// [ ] Add idempotency guard in the handler
+
