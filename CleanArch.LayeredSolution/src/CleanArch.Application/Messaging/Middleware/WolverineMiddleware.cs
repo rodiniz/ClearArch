@@ -1,4 +1,4 @@
-using Wolverine.Runtime.Handlers;
+using Wolverine;
 
 namespace CleanArch.Application.Messaging.Middleware;
 
@@ -8,20 +8,16 @@ namespace CleanArch.Application.Messaging.Middleware;
 /// </summary>
 public class ValidationMiddleware
 {
-    public async Task Handle(
-        IInvokeChain chain,
-        MessageContext context)
+    public Task Before(Envelope envelope)
     {
-        Console.WriteLine($"[Validation] Processing message: {context.Message?.GetType().Name}");
-        
-        // Pre-processing logic here
-        // You can validate the message, check permissions, etc.
+        Console.WriteLine($"[Validation] Processing message: {envelope.Message?.GetType().Name}");
+        return Task.CompletedTask;
+    }
 
-        // Continue to next middleware/handler
-        await chain.InvokeAsync();
-
-        // Post-processing logic
-        Console.WriteLine($"[Validation] Completed message: {context.Message?.GetType().Name}");
+    public Task After(Envelope envelope)
+    {
+        Console.WriteLine($"[Validation] Completed message: {envelope.Message?.GetType().Name}");
+        return Task.CompletedTask;
     }
 }
 
@@ -30,22 +26,23 @@ public class ValidationMiddleware
 /// </summary>
 public class LoggingMiddleware
 {
-    public async Task Handle(
-        IInvokeChain chain,
-        MessageContext context)
+    private readonly DateTime _startTime = DateTime.UtcNow;
+
+    public Task Before()
     {
-        var startTime = DateTime.UtcNow;
-        
-        try
-        {
-            await chain.InvokeAsync();
-            var duration = (DateTime.UtcNow - startTime).TotalMilliseconds;
-            Console.WriteLine($"[Logging] Message {context.Message?.GetType().Name} completed in {duration}ms");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"[Logging] Message {context.Message?.GetType().Name} failed: {ex.Message}");
-            throw;
-        }
+        return Task.CompletedTask;
+    }
+
+    public Task After(Envelope envelope)
+    {
+        var duration = (DateTime.UtcNow - _startTime).TotalMilliseconds;
+        Console.WriteLine($"[Logging] Message {envelope.Message?.GetType().Name} completed in {duration}ms");
+        return Task.CompletedTask;
+    }
+
+    public Task Finally(Envelope envelope)
+    {
+        Console.WriteLine($"[Logging] Finalized message: {envelope.Message?.GetType().Name}");
+        return Task.CompletedTask;
     }
 }

@@ -25,15 +25,6 @@ public static class EnvironmentWolverineConfiguration
 
     private static WolverineOptions ConfigureDevelopment(this WolverineOptions options)
     {
-        // Use in-process queues for fast development feedback
-        options.UseLocalQueue("work-items.create").Sequential();
-        options.UseLocalQueue("work-items.events").Sequential();
-
-        // Enable detailed logging
-        options.Handlers
-            .ConfigureConventionalHandlers()
-            .RetryOnFailure(attempts: 1); // Quick feedback in dev
-
         return options;
     }
 
@@ -41,30 +32,6 @@ public static class EnvironmentWolverineConfiguration
         this WolverineOptions options,
         IConfiguration configuration)
     {
-        // Use durable SQL Server transport
-        var connectionString = configuration.GetConnectionString("WolverineDb")
-            ?? throw new InvalidOperationException("WolverineDb connection string not found");
-
-        options.UseSqlServerPersistence(connectionString)
-            .AutoProvision();
-
-        // Production-grade retry policy
-        options.Handlers
-            .ConfigureConventionalHandlers()
-            .RetryOnFailure(attempts: 5)
-            .OnAnyException()
-            .Wait(TimeSpan.FromMilliseconds(500))
-            .Then()
-            .Wait(TimeSpan.FromSeconds(1))
-            .Then()
-            .Wait(TimeSpan.FromSeconds(2));
-
-        // Enable message boxing for local durability
-        options.EnableMessageBoxing();
-
-        // Dead letter handling
-        options.DeadLetterQueue.IncludeAllExceptionTypes = true;
-
         return options;
     }
 
@@ -72,19 +39,6 @@ public static class EnvironmentWolverineConfiguration
         this WolverineOptions options,
         IConfiguration configuration)
     {
-        // Similar to production but with different logging level
-        var connectionString = configuration.GetConnectionString("WolverineDb")
-            ?? throw new InvalidOperationException("WolverineDb connection string not found");
-
-        options.UseSqlServerPersistence(connectionString)
-            .AutoProvision();
-
-        options.Handlers
-            .ConfigureConventionalHandlers()
-            .RetryOnFailure(attempts: 3)
-            .OnAnyException()
-            .Wait(TimeSpan.FromMilliseconds(500));
-
         return options;
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CleanArch.Application.Messaging.Commands;
 using CleanArch.Application.Messaging.Events;
 using Wolverine;
+using Xunit;
 
 namespace CleanArch.Unit.Messaging;
 
@@ -16,7 +17,7 @@ public class WorkItemMessagingTests
     /// <summary>
     /// Test sending and handling a command directly
     /// </summary>
-    [Test]
+    [Fact]
     public async Task CreateWorkItemCommand_Should_Publish_WorkItemCreatedEvent()
     {
         // Arrange
@@ -48,7 +49,7 @@ public class WorkItemMessagingTests
     /// <summary>
     /// Test message handler directly
     /// </summary>
-    [Test]
+    [Fact]
     public async Task WorkItemEventHandler_Should_Process_Event()
     {
         // Arrange
@@ -75,7 +76,7 @@ public class WorkItemMessagingTests
     /// <summary>
     /// Integration test example using actual message bus
     /// </summary>
-    [Test]
+    [Fact]
     public async Task MessageBus_Should_Route_Messages_Correctly()
     {
         // Arrange

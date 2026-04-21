@@ -1,5 +1,4 @@
 using CleanArch.Application.Messaging.Events;
-using Wolverine.Attributes;
 
 namespace CleanArch.Application.Messaging.Handlers;
 
@@ -12,7 +11,6 @@ public class WorkItemEventHandler
     /// Handles WorkItemCreatedEvent
     /// Wolverine automatically discovers and invokes this based on the message type parameter
     /// </summary>
-    [Topic("work-items.events")]
     public async Task Handle(WorkItemCreatedEvent @event)
     {
         // Process the created event
@@ -22,18 +20,17 @@ public class WorkItemEventHandler
         // - Trigger downstream processes
         await Task.CompletedTask;
         
-        Console.WriteLine($"WorkItem created: {event.Title} (ID: {@event.WorkItemId})");
+        Console.WriteLine($"WorkItem created: {@event.Title} (ID: {@event.WorkItemId})");
     }
 
     /// <summary>
     /// Handles WorkItemUpdatedEvent
     /// </summary>
-    [Topic("work-items.events")]
     public async Task Handle(WorkItemUpdatedEvent @event)
     {
         // Process the updated event
         await Task.CompletedTask;
         
-        Console.WriteLine($"WorkItem updated: {event.Title} - Status: {@event.Status}");
+        Console.WriteLine($"WorkItem updated: {@event.Title} - Status: {@event.Status}");
     }
 }

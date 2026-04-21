@@ -8,7 +8,6 @@ namespace CleanArch.Application.Messaging.Sagas;
 /// Long-running process (saga) that coordinates multiple messages and business logic
 /// Useful for complex workflows like order processing, approval flows, etc.
 /// </summary>
-[Transient]
 public class WorkItemSaga
 {
     public int WorkItemId { get; set; }
@@ -43,6 +42,7 @@ public class WorkItemSaga
 /// <summary>
 /// Notification event emitted during saga orchestration
 /// </summary>
+[Topic("work-items.events")]
 public record WorkItemNotificationEvent
 {
     public int WorkItemId { get; init; }

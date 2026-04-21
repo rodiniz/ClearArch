@@ -1,5 +1,8 @@
+using Wolverine.Attributes;
+
 namespace CleanArch.Application.Messaging.Events;
 
+[Topic("work-items.events")]
 public record WorkItemUpdatedEvent
 {
     public int WorkItemId { get; init; }

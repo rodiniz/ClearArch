@@ -10,13 +10,13 @@ using Wolverine.Http;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configure Wolverine as the service bus (replaces MassTransit)
-builder.Host.UseWolverine((context, options) =>
+builder.Host.UseWolverine(options =>
 {
     // Auto-discovery of message handlers and events
     options.Discovery.IncludeAssembly(typeof(CleanArch.Application.DependencyInjection).Assembly);
     
     // Apply messaging configuration
-    options.AddWolverineMessaging(context.Configuration);
+    options.AddWolverineMessaging(builder.Configuration);
 });
 
 builder.Services.AddWolverineHttp();

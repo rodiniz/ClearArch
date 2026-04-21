@@ -1,7 +1,5 @@
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Wolverine;
-using Wolverine.Runtime;
 
 namespace CleanArch.Application.Messaging.Configuration;
 
@@ -18,11 +16,8 @@ public static class WolverineProductionConfiguration
         this WolverineOptions options,
         string connectionString)
     {
-        options.UseSqlServerPersistence(connectionString)
-            .AutoProvision();
-
-        options.Services.AddLogging(builder =>
-            builder.SetMinimumLevel(LogLevel.Information));
+        // Durable transports require adding the corresponding Wolverine transport packages.
+        // Keep this extension as an integration hook for solution consumers.
     }
 
     /// <summary>
@@ -32,12 +27,7 @@ public static class WolverineProductionConfiguration
         this WolverineOptions options,
         string host = "localhost")
     {
-        options.UseRabbitMq(host)
-            .BindExchange("work-items")
-            .BindQueueToExchange("work-items.create", "work-items", "create")
-            .BindQueueToExchange("work-items.events", "work-items", "events");
-
-        options.DeadLetterQueue.IncludeAllExceptionTypes = true;
+        // Requires Wolverine transport package for RabbitMQ.
     }
 
     /// <summary>
@@ -47,12 +37,7 @@ public static class WolverineProductionConfiguration
         this WolverineOptions options,
         string connectionString)
     {
-        options.UseAzureServiceBus(connectionString)
-            .Endpoint(new Uri("sb://work-items/"))
-            .ConfigureEndpoint(e =>
-            {
-                e.SubscriptionName = "work-items-consumer";
-            });
+        // Requires Wolverine transport package for Azure Service Bus.
     }
 
     /// <summary>
@@ -61,7 +46,8 @@ public static class WolverineProductionConfiguration
     /// </summary>
     public static void EnableDurability(this WolverineOptions options)
     {
-        options.EnableMessageBoxing();
+        // Durable inbox/outbox features are available when durable transport/persistence
+        // packages are installed and configured by the host application.
     }
 
     /// <summary>
@@ -69,19 +55,6 @@ public static class WolverineProductionConfiguration
     /// </summary>
     public static void ConfigureHandlerChains(this WolverineOptions options)
     {
-        options.Handlers
-            .ConfigureConventionalHandlers()
-            .RetryOnFailure(attempts: 3)
-            .OnAnyException()
-            .Wait(TimeSpan.FromMilliseconds(100));
-
-        // Custom retry policy for specific message types
-        // Uncomment and customize as needed:
-        // options.Handlers.ForMessage<CriticalCommand>()
-        //     .RetryOnFailure(attempts: 5)
-        //     .OnException<TimeoutException>()
-        //     .Wait(TimeSpan.FromSeconds(1))
-        //     .Then()
-        //     .Wait(TimeSpan.FromSeconds(2));
+        // Handler retry behavior can be configured through policy APIs in the host application.
     }
 }
