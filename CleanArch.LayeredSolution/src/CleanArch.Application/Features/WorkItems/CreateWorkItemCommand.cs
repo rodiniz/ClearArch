@@ -11,6 +11,11 @@ public sealed class CreateWorkItemCommandHandler(
 {
     public async Task<WorkItemDto> Handle(CreateWorkItemCommand request, CancellationToken cancellationToken)
     {
+        if (string.IsNullOrWhiteSpace(request.Title))
+        {
+            throw new ArgumentException("Title is required.", nameof(request.Title));
+        }
+
         var item = new WorkItem
         {
             Id = Guid.NewGuid(),
