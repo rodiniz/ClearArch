@@ -2,7 +2,7 @@
 
 ## Overview
 
-This project has been configured to use **Wolverine** as the service bus and messaging framework, replacing MassTransit. Wolverine is a modern, lightweight, and performant messaging framework built for .NET applications.
+This project has been configured to use **Wolverine** as the service bus and messaging framework, replacing MassTransit. The template enables Wolverine's local in-process queues by default. SQL Server, RabbitMQ, and Azure Service Bus examples below are optional integrations and require their corresponding Wolverine transport packages plus host-specific wiring.
 
 ## Project Structure
 
@@ -140,13 +140,13 @@ Uses in-process local queues:
 options.UseLocalQueue("work-items.create").Sequential();
 ```
 
-#### Production - SQL Server
+#### Production - SQL Server (optional integration)
 For durable messaging:
 ```csharp
 options.UseSqlServerPersistence(connectionString).AutoProvision();
 ```
 
-#### Production - RabbitMQ
+#### Production - RabbitMQ (optional integration)
 For distributed messaging:
 ```csharp
 options.UseRabbitMq("localhost")
@@ -154,7 +154,7 @@ options.UseRabbitMq("localhost")
     .BindQueueToExchange("work-items.create", "work-items", "create");
 ```
 
-#### Production - Azure Service Bus
+#### Production - Azure Service Bus (optional integration)
 For cloud deployments:
 ```csharp
 options.UseAzureServiceBus(connectionString);
@@ -241,7 +241,7 @@ options.DeadLetterQueue.IncludeAllExceptionTypes = true;
 ### Unit Test Handlers
 
 ```csharp
-[Test]
+[Fact]
 public void CreateWorkItemHandler_Returns_CreatedEvent()
 {
     var handler = new CreateWorkItemCommandHandler();
@@ -249,14 +249,16 @@ public void CreateWorkItemHandler_Returns_CreatedEvent()
     
     var result = handler.Handle(command);
     
-    Assert.That(result.Title, Is.EqualTo("Test"));
+    result.Title.Should().Be("Test");
 }
 ```
+
+This template uses xUnit and FluentAssertions. Add `using Xunit;` and `using FluentAssertions;` to a real test file.
 
 ### Integration Test with Message Bus
 
 ```csharp
-[Test]
+[Fact]
 public async Task MessageBus_Routes_Command_To_Handler()
 {
     var host = await Host.CreateDefaultBuilder()
@@ -268,7 +270,7 @@ public async Task MessageBus_Routes_Command_To_Handler()
     
     await bus.SendAsync(command);
     
-    // Verify handler was invoked
+    // Add an assertion that observes the handler result or persisted state.
 }
 ```
 
@@ -282,7 +284,7 @@ public class WorkItemHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly ILogger<WorkItemHandler> _logger;
     
-    // Constructor injection works automatically
+    // Constructor injection works automatically when the handler runs inside the Wolverine host.
     public WorkItemHandler(IApplicationDbContext dbContext, ILogger<WorkItemHandler> logger)
     {
         _dbContext = dbContext;

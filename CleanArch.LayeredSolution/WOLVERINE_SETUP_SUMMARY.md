@@ -1,7 +1,7 @@
 # Wolverine Configuration Summary
 
 ## Overview
-Your Clean Architecture project has been configured with **Wolverine** as a modern replacement for MassTransit. Wolverine provides lightweight, high-performance messaging with support for commands, events, sagas, and long-running processes.
+Your Clean Architecture project has been configured with **Wolverine** as a modern replacement for MassTransit. The template includes local in-process queues for development, message handlers, events, middleware, and example saga code. Durable transports are extension points and are not enabled by the template.
 
 ## New Files Created
 
@@ -51,8 +51,8 @@ Your Clean Architecture project has been configured with **Wolverine** as a mode
 ### Documentation & Configuration
 - `WOLVERINE_README.md` - Comprehensive usage guide
 - `WOLVERINE_GUIDE.md` - Concepts and MassTransit migration guide
-- `src/CleanArch.Api/appsettings.Development.json` - Development settings (updated)
-- `src/CleanArch.Api/appsettings.Production.json` - Production settings (new)
+- `src/CleanArch.Api/appsettings.Development.json` - Development logging and local-queue settings
+- `src/CleanArch.Api/appsettings.Production.json` - Production-oriented settings template; transport wiring remains an integration hook
 
 ### Modified Files
 - `src/CleanArch.Api/WorkItem/Program.cs` - Updated with Wolverine configuration
@@ -94,10 +94,10 @@ public (Event1, Event2) Handle(MyCommand command)
 
 | Environment | Transport | Setup |
 |------------|-----------|-------|
-| Development | Local Queues | Default (already configured) |
-| Production | SQL Server | `options.UseSqlServerPersistence(connectionString)` |
-| Distributed | RabbitMQ | `options.UseRabbitMq("localhost")` |
-| Cloud | Azure Service Bus | `options.UseAzureServiceBus(connectionString)` |
+| Development | Local Queues | Enabled by default in `WolverineConfiguration` |
+| Production | SQL Server | Optional; add the Wolverine SQL Server transport/persistence package and wire the provided extension point |
+| Distributed | RabbitMQ | Optional; add the Wolverine RabbitMQ transport package and wire the provided extension point |
+| Cloud | Azure Service Bus | Optional; add the Wolverine Azure Service Bus transport package and wire the provided extension point |
 
 ## Next Steps
 
@@ -125,12 +125,12 @@ public (Event1, Event2) Handle(MyCommand command)
 - Debug logging enabled
 
 ### Production (appsettings.Production.json)
-- Uses SQL Server for durable messaging
-- Robust retry policies (5 attempts with backoff)
-- Production logging level
+- Provides SQL Server connection-string placeholders and production logging defaults
+- Sets durable messaging intent in configuration, but does not enable SQL Server transport by itself
+- Configures retry-related settings for host applications to consume
 
 ### Environment Configuration
-Auto-selects appropriate settings based on hosting environment via `EnvironmentWolverineConfiguration.cs`
+The application loads the standard ASP.NET Core environment-specific settings files. `EnvironmentWolverineConfiguration.cs` is an extension point, but the current `Program.cs` uses `AddWolverineMessaging` directly and does not invoke `ConfigureByEnvironment`.
 
 ## Support Resources
 
@@ -141,4 +141,4 @@ Auto-selects appropriate settings based on hosting environment via `EnvironmentW
 
 ---
 
-**Status**: ✅ Ready to use - all files generated and Program.cs configured
+**Status**: Ready to use for local development. Production transports require the relevant Wolverine transport packages and host-specific wiring.

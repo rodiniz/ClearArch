@@ -1,0 +1,5 @@
+{
+    "appHost": {
+        "path": "..\\KPI\\DynamicKpi.AppHost\\DynamicKpi.AppHost.csproj"
+    }
+}

@@ -1,7 +1,10 @@
 /**
  * Wolverine Configuration - Key Concepts and Best Practices
  * 
- * This guide explains how Wolverine replaces MassTransit in your Clean Architecture
+ * This guide explains how Wolverine replaces MassTransit in your Clean Architecture.
+ * The snippets are conceptual unless noted otherwise. The template currently enables
+ * local queues only; durable transports require additional Wolverine packages and
+ * host-specific configuration.
  */
 
 // 1. MESSAGE TYPES
