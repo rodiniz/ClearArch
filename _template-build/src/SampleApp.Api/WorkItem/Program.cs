@@ -1,10 +1,10 @@
-﻿using CleanArch.Application;
-using CleanArch.Application.Messaging.Configuration;
-using CleanArch.Infrastructure;
+﻿using SampleApp.Application;
+using SampleApp.Application.Messaging.Configuration;
+using SampleApp.Infrastructure;
 using Scalar.AspNetCore;
 using Wolverine;
 using Wolverine.Http;
-using CleanArch.Api;
+using SampleApp.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseWolverine(options =>
 {
     // Auto-discovery of message handlers and events
-    options.Discovery.IncludeAssembly(typeof(CleanArch.Application.DependencyInjection).Assembly);
+    options.Discovery.IncludeAssembly(typeof(SampleApp.Application.DependencyInjection).Assembly);
     
     // Apply messaging configuration
     options.AddWolverineMessaging(builder.Configuration);

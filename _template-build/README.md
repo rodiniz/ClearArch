@@ -1,13 +1,13 @@
-﻿# CleanArch-style Layered Solution Template
+﻿# SampleApp-style Layered Solution Template
 
 This folder contains a reusable multi-project .NET template based on the same high-level structure as the current solution:
 
-- `CleanArch.Api`
-- `CleanArch.Application`
-- `CleanArch.Domain`
-- `CleanArch.Infrastructure`
-- `CleanArch.Migrations`
-- `CleanArch.Unit`
+- `SampleApp.Api`
+- `SampleApp.Application`
+- `SampleApp.Domain`
+- `SampleApp.Infrastructure`
+- `SampleApp.Migrations`
+- `SampleApp.Unit`
 
 When the template is created with a name such as `Financer`, every project is renamed automatically:
 
@@ -21,13 +21,13 @@ When the template is created with a name such as `Financer`, every project is re
 ## Install locally
 
 ```powershell
-dotnet new install .\CleanArch.LayeredSolution
+dotnet new install .\SampleApp.LayeredSolution
 ```
 
 ## Build as a NuGet template pack
 
 ```powershell
-dotnet pack .\CleanArch.TemplatePack.csproj -c Release
+dotnet pack .\SampleApp.TemplatePack.csproj -c Release
 ```
 
 This produces a `.nupkg` file that can be uploaded to an internal NuGet feed.
@@ -35,13 +35,13 @@ This produces a `.nupkg` file that can be uploaded to an internal NuGet feed.
 ## Install from a package or feed
 
 ```powershell
-dotnet new install CleanArch.TemplatePack::1.0.0 --nuget-source <FEED_URL>
+dotnet new install SampleApp.TemplatePack::1.0.0 --nuget-source <FEED_URL>
 ```
 
 ## Create a solution
 
 ```powershell
-dotnet new CleanArch-layered -n Financer
+dotnet new SampleApp-layered -n Financer
 ```
 
 ## Open in Visual Studio
