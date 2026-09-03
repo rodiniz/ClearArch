@@ -1,9 +1,20 @@
-﻿using CleanArch.Application.Common.Interfaces;
+﻿using FluentValidation;
+using CleanArch.Application.Common.Interfaces;
 using CleanArch.Domain.Entities;
 
 namespace CleanArch.Application.Features.WorkItems;
 
 public sealed record CreateWorkItemCommand(string Title);
+
+public sealed class CreateWorkItemCommandValidator : AbstractValidator<CreateWorkItemCommand>
+{
+    public CreateWorkItemCommandValidator()
+    {
+        RuleFor(command => command.Title)
+            .NotEmpty()
+            .MaximumLength(200);
+    }
+}
 
 public sealed class CreateWorkItemCommandHandler(
     IApplicationDbContext context,

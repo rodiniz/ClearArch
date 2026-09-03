@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using FluentValidation;
 using CleanArch.Application.Messaging.Handlers;
 using CleanArch.Application.Messaging.Sagas;
+using CleanArch.Application.Messaging.Middleware;
 
 namespace CleanArch.Application;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
         services.AddScoped<WorkItemEventHandler>();
         services.AddScoped<CreateWorkItemCommandHandler>();
         services.AddScoped<WorkItemSaga>();
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
 
         return services;
     }

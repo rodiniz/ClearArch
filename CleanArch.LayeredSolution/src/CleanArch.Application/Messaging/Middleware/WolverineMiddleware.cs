@@ -1,3 +1,5 @@
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
 using Wolverine;
 
 namespace CleanArch.Application.Messaging.Middleware;
@@ -8,16 +10,19 @@ namespace CleanArch.Application.Messaging.Middleware;
 /// </summary>
 public class ValidationMiddleware
 {
-    public Task Before(Envelope envelope)
+    public static async Task BeforeAsync<T>(T message, IServiceProvider services, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[Validation] Processing message: {envelope.Message?.GetType().Name}");
-        return Task.CompletedTask;
-    }
+        var validator = services.GetService<IValidator<T>>();
+        if (validator is null)
+        {
+            return;
+        }
 
-    public Task After(Envelope envelope)
-    {
-        Console.WriteLine($"[Validation] Completed message: {envelope.Message?.GetType().Name}");
-        return Task.CompletedTask;
+        var result = await validator.ValidateAsync(message, cancellationToken);
+        if (!result.IsValid)
+        {
+            throw new ValidationException(result.Errors);
+        }
     }
 }
 

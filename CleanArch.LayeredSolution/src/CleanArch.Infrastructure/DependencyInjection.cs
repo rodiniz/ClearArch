@@ -11,12 +11,7 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? "Data Source=CleanArch.db";
-
-        services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlite(connectionString, builder =>
-                builder.MigrationsAssembly("CleanArch.Migrations")));
+        services.AddDbContext<ApplicationDbContext>(_ => { });
 
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
         services.AddScoped<IDateTimeProvider, SystemDateTimeProvider>();

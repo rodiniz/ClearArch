@@ -2,6 +2,7 @@ using Microsoft.Extensions.Configuration;
 using CleanArch.Application.Messaging.Commands;
 using CleanArch.Application.Messaging.Events;
 using CleanArch.Application.Messaging.Sagas;
+using CleanArch.Application.Messaging.Middleware;
 using Wolverine;
 
 namespace CleanArch.Application.Messaging.Configuration;
@@ -22,17 +23,7 @@ public static class WolverineConfiguration
         options.Discovery
             .IncludeAssembly(typeof(WolverineConfiguration).Assembly);
 
-        // Wolverine 5.x routing style: route message types explicitly.
-        options.PublishMessage<CreateWorkItemCommand>()
-            .ToLocalQueue("work-items.create");
+        options.Policies.AddMiddleware<ValidationMiddleware>();
 
-        options.PublishMessage<WorkItemCreatedEvent>()
-            .ToLocalQueue("work-items.events");
-
-        options.PublishMessage<WorkItemUpdatedEvent>()
-            .ToLocalQueue("work-items.events");
-
-        options.PublishMessage<WorkItemNotificationEvent>()
-            .ToLocalQueue("work-items.events");
     }
 }

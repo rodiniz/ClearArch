@@ -3,6 +3,8 @@ using CleanArch.Application;
 using CleanArch.Application.Messaging.Configuration;
 using CleanArch.Infrastructure;
 using CleanArch.Infrastructure.Persistence;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
 using Scalar.AspNetCore;
 using Wolverine;
 using Wolverine.Http;
@@ -28,12 +30,6 @@ builder.Services.AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();
 
-await using (var scope = app.Services.CreateAsyncScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    await dbContext.Database.EnsureCreatedAsync();
-}
-
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -41,6 +37,25 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next(context);
+    }
+    catch (ValidationException exception) when (!context.Response.HasStarted)
+    {
+        var errors = exception.Errors
+            .GroupBy(error => error.PropertyName)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Select(error => error.ErrorMessage).ToArray());
+
+        context.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await context.Response.WriteAsJsonAsync(new ValidationProblemDetails(errors));
+    }
+});
 
 app.MapWolverineEndpoints();
 app.MapHealthChecks("/health");

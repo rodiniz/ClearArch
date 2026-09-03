@@ -9,9 +9,6 @@ public sealed class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Ap
     public ApplicationDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-        optionsBuilder.UseSqlite(
-            "Data Source=CleanArch.db",
-            builder => builder.MigrationsAssembly(typeof(AssemblyMarker).Assembly.GetName().Name));
 
         return new ApplicationDbContext(optionsBuilder.Options);
     }
