@@ -1,22 +1,14 @@
-﻿using CleanArch.Application;
-using CleanArch.Application.Messaging.Configuration;
+using CleanArch.Application;
 using CleanArch.Infrastructure;
 using Scalar.AspNetCore;
 using Wolverine;
 using Wolverine.Http;
 using CleanArch.Api;
+using JasperFx;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure Wolverine as the service bus (replaces MassTransit)
-builder.Host.UseWolverine(options =>
-{
-    // Auto-discovery of message handlers and events
-    options.Discovery.IncludeAssembly(typeof(CleanArch.Application.DependencyInjection).Assembly);
-    
-    // Apply messaging configuration
-    options.AddWolverineMessaging(builder.Configuration);
-});
+builder.AddWolverine();
 
 builder.Services.AddWolverineHttp();
 builder.Services.AddOpenApi();
@@ -40,6 +32,6 @@ app.UseExceptionMiddleWare();
 app.MapWolverineEndpoints();
 app.MapHealthChecks("/health");
 
-app.Run();
+return await app.RunJasperFxCommands(args);
 
 public partial class Program;
