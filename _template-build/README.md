@@ -51,7 +51,6 @@ After installation, the template is also available from the Visual Studio new pr
 ## Notes
 
 - The generated solution targets .NET 10.
-- The generated solution uses SQLite so it runs without extra infrastructure.
 - The `Migrations` project is included for future Entity Framework migrations.
 - The sample feature is intentionally small and generic so it can be replaced with your domain-specific code.
 
@@ -60,7 +59,6 @@ After installation, the template is also available from the Visual Studio new pr
 ### Pros
 
 - Clear project boundaries: the template starts with separate Api, Application, Domain, Infrastructure, Migrations, and Unit projects, which makes dependency direction and solution growth easier to manage.
-- Fast local startup: SQLite plus the default connection string means a generated solution can run without provisioning SQL Server, containers, or cloud resources.
 - Good packaging ergonomics: the template is already wired for `dotnet new` installation, local packing, and internal NuGet distribution.
 - Built-in testing surface: the template includes a dedicated unit test project with AutoFixture, NSubstitute, xUnit, and FluentAssertions, which is a solid default stack for application-layer testing.
 - Modern API defaults: OpenAPI, Scalar, health checks, and Wolverine HTTP endpoints provide a workable starting point for service development without extra setup.
