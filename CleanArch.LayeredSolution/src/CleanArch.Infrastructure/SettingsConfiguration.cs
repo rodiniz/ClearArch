@@ -1,4 +1,3 @@
-using Azure.Identity;
 using CleanArch.Infrastructure.Extensions;
 using CleanArch.Infrastructure.Settings;
 using Microsoft.Extensions.Configuration;

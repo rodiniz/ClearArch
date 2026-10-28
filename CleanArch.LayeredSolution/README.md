@@ -44,6 +44,31 @@ dotnet new install CleanArch.TemplatePack::1.0.0 --nuget-source <FEED_URL>
 dotnet new CleanArch-layered -n Financer
 ```
 
+### Optional messaging transports
+
+By default, Wolverine runs locally without Azure Service Bus or AWS SQS packages
+or connections. Enable either transport explicitly (or combine both options):
+
+```powershell
+dotnet new CleanArch-layered -n Financer --UseAzureServiceBus
+dotnet new CleanArch-layered -n Financer --UseAwsSqs
+```
+
+The API configures selected transports in its existing Wolverine registration.
+For Azure, set `AzureSettings__ServiceBusNameSpace` to the fully qualified Service
+Bus namespace. `DefaultAzureCredential` is used by default. Alternatively, set
+`AzureSettings__UseManagedIdentity=false` and supply
+`AzureSettings__ServiceBusConnectionString` through environment variables or user
+secrets. Set `AzureSettings__ServiceBusQueueName` to your existing queue name.
+
+For SQS, set `AwsSettings__Region` (or use standard AWS SDK region configuration)
+and `AwsSettings__SqsQueueName`. Credentials come from the standard AWS SDK chain,
+including IAM roles and shared AWS profiles. No keys are stored in configuration.
+Queues must already exist; add message-specific publish routes for outgoing events.
+
+See Wolverine's [Azure Service Bus](https://wolverinefx.net/guide/messaging/transports/azureservicebus/)
+and [Amazon SQS](https://wolverinefx.net/guide/messaging/transports/sqs/) references.
+
 ## Open in Visual Studio
 
 After installation, the template is also available from the Visual Studio new project dialog as a .NET template.

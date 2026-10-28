@@ -4,6 +4,9 @@ using JasperFx.CodeGeneration;
 using JasperFx.CodeGeneration.Model;
 using Wolverine;
 using Wolverine.FluentValidation;
+#if (UseAzureServiceBus || UseAwsSqs)
+using CleanArch.Infrastructure.Settings;
+#endif
 
 public static class WolverineExtensions
 {
@@ -25,7 +28,12 @@ public static class WolverineExtensions
 			}
 
 			options.UseFluentValidation();
-           
+#if (UseAzureServiceBus)
+			options.ConfigureAzureServiceBus(builder.Configuration);
+#endif
+#if (UseAwsSqs)
+			options.ConfigureAwsSqs(builder.Configuration);
+#endif
         });
     }
 }

@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "http://json.schemastore.org/template",
   "author": "Rodrigo Diniz",
   "classifications": [
@@ -12,6 +12,38 @@
   "shortName": "CleanArch-layered",
   "sourceName": "CleanArch",
   "preferNameDirectory": true,
+  "symbols": {
+    "UseAzureServiceBus": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include Azure Service Bus integration."
+    },
+    "UseAwsSqs": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include AWS SQS integration."
+    }
+  },
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(!UseAzureServiceBus)",
+          "exclude": [
+            "src/CleanArch.Infrastructure/Settings/EventBusConfigurations.cs"
+          ]
+        },
+        {
+          "condition": "(!UseAwsSqs)",
+          "exclude": [
+            "src/CleanArch.Infrastructure/Settings/AwsSqsConfigurations.cs"
+          ]
+        }
+      ]
+    }
+  ],
   "tags": {
     "language": "C#",
     "type": "solution"

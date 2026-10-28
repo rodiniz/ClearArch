@@ -20,7 +20,12 @@
     <PackageVersion Include="NSubstitute" Version="6.2.0" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.17.4" />
     <PackageVersion Include="WolverineFx" Version="6.38.0" />
+    <!--#if (UseAzureServiceBus) -->
     <PackageVersion Include="WolverineFx.AzureServiceBus" Version="6.38.0" />
+    <!--#endif -->
+    <!--#if (UseAwsSqs) -->
+    <PackageVersion Include="WolverineFx.AmazonSqs" Version="6.38.0" />
+    <!--#endif -->
     <PackageVersion Include="WolverineFx.FluentValidation" Version="6.38.0" />
     <PackageVersion Include="WolverineFx.Http" Version="6.38.0" />
     <PackageVersion Include="WolverineFx.RuntimeCompilation" Version="6.38.0" />

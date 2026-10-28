@@ -17,50 +17,50 @@ public static class EventBusConfigurations
         IConfiguration configuration)
         where TMessage : class
     {
+        services.AddWolverine(options =>
+        {
+            options.ServiceLocationPolicy = ServiceLocationPolicy.AlwaysAllowed;
+            options.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
+            options.ConfigureAzureServiceBus(configuration);
+        });
+
+        return services;
+    }
+
+    public static void ConfigureAzureServiceBus(
+        this WolverineOptions options,
+        IConfiguration configuration)
+    {
         var useManagedIdentity = configuration.GetValue<bool>("AzureSettings:UseManagedIdentity");
         var serviceBusNamespace = configuration["AzureSettings:ServiceBusNameSpace"];
         var connectionString = configuration["AzureSettings:ServiceBusConnectionString"];
         var queueName = configuration["AzureSettings:ServiceBusQueueName"]??"queue";
-        services.AddWolverine(options =>
+        if (useManagedIdentity)
         {
-            	options.ServiceLocationPolicy = ServiceLocationPolicy.AlwaysAllowed;
-                options.CodeGeneration.TypeLoadMode = TypeLoadMode.Auto;
-                //options.Discovery.IncludeAssembly(typeof(TranscriptionErrorConsumer).Assembly);
-                
-                if (useManagedIdentity)
-                {
-                    if (string.IsNullOrWhiteSpace(serviceBusNamespace))
-                    {
-                        throw new InvalidOperationException(
-                            "AzureSettings:ServiceBusNameSpace is required when managed identity is enabled.");
-                    }
+            if (string.IsNullOrWhiteSpace(serviceBusNamespace))
+            {
+                throw new InvalidOperationException(
+                    "AzureSettings:ServiceBusNameSpace is required when managed identity is enabled.");
+            }
 
-                    options.UseAzureServiceBus(
-                        serviceBusNamespace,
-                        new DefaultAzureCredential());
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(connectionString))
-                    {
-                        throw new InvalidOperationException(
-                            "AzureSettings:ServiceBusConnectionString is required when managed identity is disabled.");
-                    }
+            options.UseAzureServiceBus(serviceBusNamespace, new DefaultAzureCredential());
+        }
+        else
+        {
+            if (string.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new InvalidOperationException(
+                    "AzureSettings:ServiceBusConnectionString is required when managed identity is disabled.");
+            }
 
-                    options.UseAzureServiceBus(connectionString);
+            options.UseAzureServiceBus(connectionString);
+        }
 
-                }
-                
-                options.UseSystemTextJsonForSerialization(json =>
-                    {
-                        json.PropertyNameCaseInsensitive = true;
-                    });
-
-                options.ListenToAzureServiceBusQueue(queueName).ProcessInline();
+        options.UseSystemTextJsonForSerialization(json =>
+        {
+            json.PropertyNameCaseInsensitive = true;
         });
 
-        return services;
-    }   
-
-    
+        options.ListenToAzureServiceBusQueue(queueName).ProcessInline();
+    }
 }
