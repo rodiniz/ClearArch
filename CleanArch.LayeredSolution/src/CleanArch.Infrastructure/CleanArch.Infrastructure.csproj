@@ -14,6 +14,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+    <!--#if (UsePostgres) -->
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <!--#endif -->
     <!--#if (UseAzureServiceBus) -->
     <PackageReference Include="WolverineFx.AzureServiceBus" />
     <!--#endif -->

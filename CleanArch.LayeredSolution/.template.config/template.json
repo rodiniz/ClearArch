@@ -24,6 +24,12 @@
       "datatype": "bool",
       "defaultValue": "false",
       "description": "Include AWS SQS integration."
+    },
+    "UsePostgres": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "description": "Include the PostgreSQL EF Core provider."
     }
   },
   "sources": [

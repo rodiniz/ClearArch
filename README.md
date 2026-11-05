@@ -66,6 +66,19 @@ application and add message-specific publish routes for outgoing messages.
 See [the template-pack guide](README.TemplatePack.md) for additional configuration
 details and transport references.
 
+### Optional PostgreSQL provider
+
+PostgreSQL support is excluded by default. Opt in to include the Npgsql driver and
+EF Core provider:
+
+```powershell
+dotnet new CleanArch-layered -n Example --UsePostgres
+```
+
+Set `ConnectionStrings__DefaultConnection` before using the work item endpoints.
+Without `--UsePostgres`, no EF Core database provider is selected; configure another
+provider before using persistence-backed endpoints.
+
 ## Publish and install from a feed
 
 To publish it to a feed:

@@ -69,6 +69,21 @@ Queues must already exist; add message-specific publish routes for outgoing even
 See Wolverine's [Azure Service Bus](https://wolverinefx.net/guide/messaging/transports/azureservicebus/)
 and [Amazon SQS](https://wolverinefx.net/guide/messaging/transports/sqs/) references.
 
+### Optional PostgreSQL provider
+
+PostgreSQL support is excluded by default. Opt in when creating a solution to add
+the Npgsql driver and EF Core provider:
+
+```powershell
+dotnet new CleanArch-layered -n Financer --UsePostgres
+```
+
+When enabled, set `ConnectionStrings__DefaultConnection` (or
+`ConnectionStrings:DefaultConnection`) to the PostgreSQL connection string before
+using the work item endpoints. Without `--UsePostgres`, the Infrastructure project
+does not select a database provider; configure another EF Core provider before
+using persistence-backed endpoints.
+
 ## Open in Visual Studio
 
 After installation, the template is also available from the Visual Studio new project dialog as a .NET template.

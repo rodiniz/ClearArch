@@ -66,6 +66,20 @@ automatically. Add message-specific publish routes as needed.
 Transport references: [Azure Service Bus](https://wolverinefx.net/guide/messaging/transports/azureservicebus/)
 and [Amazon SQS](https://wolverinefx.net/guide/messaging/transports/sqs/).
 
+## Optional PostgreSQL provider
+
+PostgreSQL support is excluded by default. Generate a solution with the Npgsql
+driver and EF Core provider by opting in:
+
+```powershell
+dotnet new CleanArch-layered -n Example --UsePostgres
+```
+
+Set `ConnectionStrings__DefaultConnection` to the PostgreSQL connection string
+before using the work item endpoints. Without `--UsePostgres`, no database provider
+is selected; configure another EF Core provider before using persistence-backed
+endpoints.
+
 ## Publish the package
 
 ```powershell
