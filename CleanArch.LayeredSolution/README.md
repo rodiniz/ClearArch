@@ -86,7 +86,7 @@ After installation, the template is also available from the Visual Studio new pr
 - Clear project boundaries: the template starts with separate Api, Application, Domain, Infrastructure, Migrations, and Unit projects, which makes dependency direction and solution growth easier to manage.
 - Good packaging ergonomics: the template is already wired for `dotnet new` installation, local packing, and internal NuGet distribution.
 - Built-in testing surface: the template includes a dedicated unit test project with AutoFixture, NSubstitute, xUnit, and FluentAssertions, which is a solid default stack for application-layer testing.
-- Modern API defaults: OpenAPI, Scalar, health checks, and Wolverine HTTP endpoints provide a workable starting point for service development without extra setup.
+- Modern API defaults: OpenAPI, Scalar, health checks, and ASP.NET Core minimal APIs provide a workable starting point for service development without extra setup.
 - Messaging-ready structure: Wolverine configuration, handlers, middleware, events, and sagas are already present, which lowers the setup cost for teams that know they want asynchronous workflows.
 
 ### Cons

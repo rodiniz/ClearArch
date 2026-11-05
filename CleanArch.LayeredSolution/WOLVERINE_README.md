@@ -417,4 +417,4 @@ Console.WriteLine($"Failed: {stats.FailedMessages}");
 - `WOLVERINE_GUIDE.md` - Comprehensive guide and MassTransit comparison
 - `WolverineConfiguration.cs` - Development configuration
 - `WolverineProductionConfiguration.cs` - Production configuration examples
-- `WorkItemMessagingEndpoint.cs` - HTTP endpoint examples
+- Work item HTTP routes use ASP.NET Core minimal APIs in `src/CleanArch.Api/WorkItem/Program.cs`.

@@ -41,8 +41,8 @@ Your Clean Architecture project has been configured with **Wolverine** as a mode
   - Environment-specific configuration (Development, Staging, Production)
 
 #### API Endpoints
-- `src/CleanArch.Api/WorkItem/Endpoints/WorkItemMessagingEndpoint.cs`
-  - HTTP endpoints demonstrating message publishing
+- `src/CleanArch.Api/WorkItem/Program.cs`
+  - ASP.NET Core minimal APIs dispatching commands and queries through Wolverine
 
 #### Tests
 - `src/CleanArch.Unit/Messaging/WorkItemMessagingTests.cs`
