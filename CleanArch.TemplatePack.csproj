@@ -7,7 +7,8 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <NoDefaultExcludes>true</NoDefaultExcludes>
     <PackageId>CleanArch.TemplatePack</PackageId>
-    <PackageVersion>1.0.0</PackageVersion>
+    <PackageVersion Condition="'$(ReleasePackageVersion)' == ''">1.0.0</PackageVersion>
+    <PackageVersion Condition="'$(ReleasePackageVersion)' != ''">$(ReleasePackageVersion)</PackageVersion>
     <Title>CleanArch Solution Templates</Title>
     <Authors>CleanArch</Authors>
     <Description>Multi-project .NET solution template modeled after the CleanArch layered architecture.</Description>

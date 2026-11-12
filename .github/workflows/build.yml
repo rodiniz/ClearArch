@@ -13,15 +13,23 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
       - name: Pack template
-        run: dotnet pack CleanArch.TemplatePack.csproj --configuration Release --output ./artifacts
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          if [ -n "$RELEASE_TAG" ]; then
+            version="${RELEASE_TAG#v}"
+            dotnet pack CleanArch.TemplatePack.csproj --configuration Release --output ./artifacts -p:ReleasePackageVersion="$version"
+          else
+            dotnet pack CleanArch.TemplatePack.csproj --configuration Release --output ./artifacts
+          fi
       - name: Upload package
         if: github.event_name == 'release'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: template-pack
           path: artifacts/*.nupkg
@@ -35,10 +43,10 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.0.x
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           name: template-pack
           path: artifacts

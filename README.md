@@ -90,8 +90,19 @@ Publishing. Before publishing:
 	`CleanArch.TemplatePack` and new versions of it.
 2. Set the GitHub Actions secret `NUGET_USER` to the NuGet.org profile username
 	associated with the policy, not an email address.
-3. Update `PackageVersion` in `CleanArch.TemplatePack.csproj`, then publish a
-	GitHub release whose tag matches the version, such as `v1.0.0` or `1.0.0`.
+
+To trigger publishing:
+
+1. Push the workflow changes to GitHub and open the repository's **Releases** page.
+2. Select **Draft a new release**, then choose or create a tag for the desired
+	package version, such as `v1.2.3` or `1.2.3`. Make sure the tag points to a
+	commit containing the workflow changes and the template you want to publish.
+3. Select **Publish release**, then check the **Actions** tab for the build and
+	publish jobs. Use a package version that has not already been published.
+
+The release tag determines the package version; the workflow does not commit a
+version change to the project file. Local builds use the project default. Pushing
+a tag or saving a draft release alone does not trigger publishing.
 
 The workflow exchanges the GitHub OIDC token for a short-lived NuGet API key; no
 long-lived NuGet API key is required. See the [NuGet Trusted Publishing
