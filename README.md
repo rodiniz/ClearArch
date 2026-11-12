@@ -86,10 +86,10 @@ Publishing a GitHub release also publishes the package to NuGet.org using Truste
 Publishing. Before publishing:
 
 1. Add a NuGet.org Trusted Publishing policy for this repository and workflow
-	file `build.yml`. Leave the environment empty and allow publishing
+	file `build.yml`. Set its environment to `production` and allow publishing
 	`CleanArch.TemplatePack` and new versions of it.
-2. Set the GitHub Actions secret `NUGET_USER` to the NuGet.org profile username
-	associated with the policy, not an email address.
+2. Set the GitHub Actions secret `NUGET_USER` to the NuGet.org username of the
+	policy creator, not the policy owner or an email address.
 
 To trigger publishing:
 
