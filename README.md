@@ -97,6 +97,7 @@ To trigger publishing:
 2. Select **Draft a new release**, then choose or create a tag for the desired
 	package version, such as `v1.2.3` or `1.2.3`. Make sure the tag points to a
 	commit containing the workflow changes and the template you want to publish.
+	Do not add a period after `v`: `v.1.2.3` is invalid.
 3. Select **Publish release**, then check the **Actions** tab for the build and
 	publish jobs. Use a package version that has not already been published.
 
