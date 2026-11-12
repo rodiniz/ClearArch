@@ -1,4 +1,4 @@
-﻿# Template Packaging
+# Template Packaging
 
 The reusable Visual Studio/.NET template is stored in `CleanArch.LayeredSolution`.
 
@@ -10,18 +10,10 @@ dotnet pack .\CleanArch.TemplatePack.csproj -c Release
 
 The generated package is written to `nupkg`.
 
-## Install without publishing to NuGet
-
-Install directly from the template folder:
+## Install from NuGet.org
 
 ```powershell
-dotnet new install .\CleanArch.LayeredSolution
-```
-
-Or install from a local package file after packing:
-
-```powershell
-dotnet new install .\nupkg\CleanArch.TemplatePack.1.0.0.nupkg
+dotnet new install CleanArch.TemplatePack
 ```
 
 ## Create a solution
@@ -109,7 +101,7 @@ The workflow exchanges the GitHub OIDC token for a short-lived NuGet API key; no
 long-lived NuGet API key is required. See the [NuGet Trusted Publishing
 documentation](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing).
 
-## Publish and install from a feed
+## Publish to another feed
 
 To publish it to a feed:
 
@@ -117,8 +109,4 @@ To publish it to a feed:
 dotnet nuget push .\nupkg\CleanArch.TemplatePack.1.0.0.nupkg --source <FEED_NAME_OR_URL> --api-key <API_KEY>
 ```
 
-To install from that feed:
-
-```powershell
-dotnet new install CleanArch.TemplatePack::1.0.0 --nuget-source <FEED_URL>
-```
+Replace the placeholders with the target feed and its API key.

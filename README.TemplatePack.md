@@ -2,24 +2,10 @@
 
 This NuGet package contains the `CleanArch-layered` .NET solution template.
 
-## Install without publishing to NuGet
-
-Install directly from the template source folder:
+## Install from NuGet.org
 
 ```powershell
-dotnet new install .\CleanArch.LayeredSolution
-```
-
-Or install from a local `.nupkg` file:
-
-```powershell
-dotnet new install .\nupkg\CleanArch.TemplatePack.1.0.0.nupkg
-```
-
-## Install from a NuGet package
-
-```powershell
-dotnet new install CleanArch.TemplatePack::1.0.0 --nuget-source <FEED_URL>
+dotnet new install CleanArch.TemplatePack
 ```
 
 ## Create a solution

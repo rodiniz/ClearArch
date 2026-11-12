@@ -18,10 +18,10 @@ When the template is created with a name such as `Financer`, every project is re
 - `Financer.Migrations`
 - `Financer.Unit`
 
-## Install locally
+## Install from NuGet.org
 
 ```powershell
-dotnet new install .\CleanArch.LayeredSolution
+dotnet new install CleanArch.TemplatePack
 ```
 
 ## Build as a NuGet template pack
@@ -31,12 +31,6 @@ dotnet pack .\CleanArch.TemplatePack.csproj -c Release
 ```
 
 This produces a `.nupkg` file that can be uploaded to an internal NuGet feed.
-
-## Install from a package or feed
-
-```powershell
-dotnet new install CleanArch.TemplatePack::1.0.0 --nuget-source <FEED_URL>
-```
 
 ## Create a solution
 
