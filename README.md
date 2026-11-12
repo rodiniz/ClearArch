@@ -79,6 +79,24 @@ Set `ConnectionStrings__DefaultConnection` before using the work item endpoints.
 Without `--UsePostgres`, no EF Core database provider is selected; configure another
 provider before using persistence-backed endpoints.
 
+## Publish to NuGet.org
+
+The GitHub Actions workflow builds the template pack on pushes and pull requests.
+Publishing a GitHub release also publishes the package to NuGet.org using Trusted
+Publishing. Before publishing:
+
+1. Add a NuGet.org Trusted Publishing policy for this repository and workflow
+	file `build.yml`. Leave the environment empty and allow publishing
+	`CleanArch.TemplatePack` and new versions of it.
+2. Set the GitHub Actions secret `NUGET_USER` to the NuGet.org profile username
+	associated with the policy, not an email address.
+3. Update `PackageVersion` in `CleanArch.TemplatePack.csproj`, then publish a
+	GitHub release whose tag matches the version, such as `v1.0.0` or `1.0.0`.
+
+The workflow exchanges the GitHub OIDC token for a short-lived NuGet API key; no
+long-lived NuGet API key is required. See the [NuGet Trusted Publishing
+documentation](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing).
+
 ## Publish and install from a feed
 
 To publish it to a feed:

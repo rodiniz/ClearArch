@@ -1,0 +1,62 @@
+name: Build and publish
+
+on:
+  push:
+  pull_request:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - name: Pack template
+        run: dotnet pack CleanArch.TemplatePack.csproj --configuration Release --output ./artifacts
+      - name: Upload package
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: template-pack
+          path: artifacts/*.nupkg
+          if-no-files-found: error
+
+  publish:
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+      - uses: actions/download-artifact@v4
+        with:
+          name: template-pack
+          path: artifacts
+      - name: Verify release version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          test -f "artifacts/CleanArch.TemplatePack.${version}.nupkg"
+      - name: NuGet login
+        id: login
+        uses: NuGet/login@v1
+        with:
+          user: ${{ secrets.NUGET_USER }}
+      - name: Publish to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="${RELEASE_TAG#v}"
+          dotnet nuget push "artifacts/CleanArch.TemplatePack.${version}.nupkg" --api-key "$NUGET_API_KEY" --source https://api.nuget.org/v3/index.json
