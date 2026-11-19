@@ -2,8 +2,8 @@ using AutoFixture;
 using CleanArch.Application.Common.Interfaces;
 using CleanArch.Application.Features.WorkItems;
 using CleanArch.Domain.Entities;
+using CleanArch.Domain.Interfaces.Repositories.Common;
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using NSubstitute;
 using Xunit;
 
@@ -13,16 +13,16 @@ public class CreateWorkItemCommandHandlerTests : BaseTest
 {
     private readonly IApplicationDbContext _context;
     private readonly IDateTimeProvider _dateTimeProvider;
-    private readonly DbSet<WorkItem> _workItems;
+    private readonly IDbSet<WorkItem> _workItems;
     private readonly CreateWorkItemCommandHandler _sut;
 
     public CreateWorkItemCommandHandlerTests()
     {
         _context = Fixture.FreezeSubstitute<IApplicationDbContext>();
         _dateTimeProvider = Fixture.FreezeSubstitute<IDateTimeProvider>();
-        _workItems = Substitute.For<DbSet<WorkItem>>();
+        _workItems = Substitute.For<IDbSet<WorkItem>>();
 
-        _context.WorkItems.Returns(_workItems);
+        _context.Set<WorkItem>().Returns(_workItems);
         _sut = Fixture.Create<CreateWorkItemCommandHandler>();
     }
 
@@ -37,8 +37,13 @@ public class CreateWorkItemCommandHandlerTests : BaseTest
 
         _dateTimeProvider.UtcNow.Returns(createdAtUtc);
         _workItems
-            .When(set => set.Add(Arg.Any<WorkItem>()))
-            .Do(call => addedItem = call.Arg<WorkItem>());
+            .AddAsync(Arg.Any<WorkItem>(), cancellationToken)
+            .Returns(call =>
+            {
+                var item = call.Arg<WorkItem>();
+                addedItem = item;
+                return Task.FromResult(item);
+            });
 
         // Act
         var result = await _sut.Handle(command, cancellationToken);
@@ -54,7 +59,7 @@ public class CreateWorkItemCommandHandlerTests : BaseTest
         result.IsDone.Should().BeFalse();
         result.CreatedAtUtc.Should().Be(createdAtUtc);
 
-        _workItems.Received(1).Add(Arg.Any<WorkItem>());
+        await _workItems.Received(1).AddAsync(Arg.Any<WorkItem>(), cancellationToken);
         await _context.Received(1).SaveChangesAsync(cancellationToken);
     }
 
@@ -72,7 +77,7 @@ public class CreateWorkItemCommandHandlerTests : BaseTest
         exception.Which.ParamName.Should().Be("Title");
         exception.Which.Message.Should().StartWith("Title is required.");
 
-        _workItems.DidNotReceive().Add(Arg.Any<WorkItem>());
+        await _workItems.DidNotReceive().AddAsync(Arg.Any<WorkItem>(), Arg.Any<CancellationToken>());
         await _context.DidNotReceiveWithAnyArgs().SaveChangesAsync(default);
     }
 }

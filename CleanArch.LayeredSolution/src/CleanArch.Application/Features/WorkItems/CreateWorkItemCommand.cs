@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using CleanArch.Application.Common.Interfaces;
 using CleanArch.Domain.Entities;
 
@@ -35,7 +35,7 @@ public sealed class CreateWorkItemCommandHandler(
             IsDone = false
         };
 
-        context.WorkItems.Add(item);
+        await context.Set<WorkItem>().AddAsync(item, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
 
         return new WorkItemDto(item.Id, item.Title, item.IsDone, item.CreatedAtUtc);

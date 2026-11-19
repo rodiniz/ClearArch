@@ -1,5 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using CleanArch.Application.Common.Interfaces;
+using CleanArch.Domain.Entities;
 
 namespace CleanArch.Application.Features.WorkItems;
 
@@ -11,7 +12,7 @@ public sealed class GetWorkItemsQueryHandler(IApplicationDbContext context)
 {
     public async Task<IReadOnlyList<WorkItemDto>> Handle(GetWorkItemsQuery request, CancellationToken cancellationToken)
     {
-        return await context.WorkItems
+        return await context.Set<WorkItem>()
             .AsNoTracking()
             .OrderBy(item => item.CreatedAtUtc)
             .Select(item => new WorkItemDto(item.Id, item.Title, item.IsDone, item.CreatedAtUtc))
