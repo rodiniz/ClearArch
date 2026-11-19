@@ -1,12 +1,14 @@
 namespace CleanArch.Infrastructure.Persistence;
 
-using Microsoft.EntityFrameworkCore;
 using CleanArch.Application.Common.Interfaces;
-using CleanArch.Domain.Entities;
+using CleanArch.Domain.Interfaces.Repositories.Common;
+
+using Microsoft.EntityFrameworkCore;
+
 
 public class ApplicationDbContext: DbContext, IApplicationDbContext
 {
-	public DbSet<WorkItem> WorkItems => Set<WorkItem>();
+	
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
 	{
 		ChangeTracker.LazyLoadingEnabled = true;
@@ -15,4 +17,15 @@ public class ApplicationDbContext: DbContext, IApplicationDbContext
     {
         base.OnModelCreating(modelBuilder);
     }
+
+	IDbSet<T> IApplicationDbContext.Set<T>() where T : class
+	{
+		return typeof(T) switch
+		{
+			//var _ when typeof(T).Equals(typeof(Participant)) =>
+			//	(IDbSet<T>)new DbSetWrapper<Participant>(Participants, this),
+			
+			_ => throw new NotSupportedException($"Type {typeof(T)} is not supported."),
+		};
+	}
 }
