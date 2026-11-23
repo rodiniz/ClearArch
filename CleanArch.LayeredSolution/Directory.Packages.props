@@ -17,8 +17,8 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.*" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="*" />
     <!--#if (UsePostgres) -->
-    <PackageVersion Include="Npgsql" Version="*" />
-    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="*" />
+    <PackageVersion Include="Npgsql" Version="10.*" />
+    <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.*" />
     <!--#endif -->
     <PackageVersion Include="NSubstitute" Version="*" />
     <PackageVersion Include="Scalar.AspNetCore" Version="*" />

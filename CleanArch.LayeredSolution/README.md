@@ -1,6 +1,23 @@
-﻿# CleanArch-style Layered Solution Template
+# CleanArch-style Layered Solution Template
 
-This folder contains a reusable multi-project .NET template based on the same high-level structure as the current solution:
+Build a .NET 10 service with clear project boundaries and a ready-made stack for
+API discovery, messaging, validation, persistence, and testing. The included work
+item feature offers a starting point for your own domain.
+
+## Meet the stack
+
+| Library | What it brings |
+| --- | --- |
+| [ASP.NET Core OpenAPI](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview) and [Scalar](https://scalar.com/) | OpenAPI documents and an interactive API reference in development. |
+| [Wolverine](https://wolverinefx.net/) | Local command and query handling, with optional Azure Service Bus and AWS SQS transports. |
+| [FluentValidation](https://docs.fluentvalidation.net/) | Readable validation rules integrated with Wolverine handlers. |
+| [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) | Persistence abstractions and a migrations project; PostgreSQL is opt-in. |
+| [FluentResults](https://github.com/altmann/FluentResults) | Result types for expressing success and failure. |
+| [xUnit](https://xunit.net/), [NSubstitute](https://nsubstitute.github.io/), [AutoFixture](https://github.com/AutoFixture/AutoFixture), and [FluentAssertions](https://fluentassertions.com/) | Tests, dependency substitutes, generated test data, and expressive assertions. |
+
+## Solution structure
+
+The template separates responsibilities into six projects:
 
 - `CleanArch.Api`
 - `CleanArch.Application`

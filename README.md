@@ -1,4 +1,25 @@
-# Template Packaging
+# CleanArch Template Pack
+
+Start your next .NET 10 service with a layered solution, a sample work item
+feature, and a practical set of libraries for APIs, messaging, validation, and
+testing. Generate the pieces you need, then make the solution your own.
+
+## What's inside
+
+| Library | What it brings to the template |
+| --- | --- |
+| [ASP.NET Core OpenAPI](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview) and [Scalar](https://scalar.com/) | OpenAPI documents and an interactive API reference in development. |
+| [Wolverine](https://wolverinefx.net/) | In-process command and query handling, with optional Azure Service Bus and AWS SQS transports. |
+| [FluentValidation](https://docs.fluentvalidation.net/) | Readable validation rules, integrated with Wolverine handlers. |
+| [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) | Persistence abstractions and a migrations project; PostgreSQL is opt-in. |
+| [FluentResults](https://github.com/altmann/FluentResults) | Result types for expressing success and failure. |
+| [xUnit](https://xunit.net/), [NSubstitute](https://nsubstitute.github.io/), [AutoFixture](https://github.com/AutoFixture/AutoFixture), and [FluentAssertions](https://fluentassertions.com/) | A test stack for writing tests, substituting dependencies, generating test data, and expressing assertions. |
+
+The solution separates API, Application, Domain, Infrastructure, Migrations,
+and Unit projects. The sample work item feature demonstrates the shape of an
+application while leaving room for your own domain.
+
+## Build the template pack
 
 The reusable Visual Studio/.NET template is stored in `CleanArch.LayeredSolution`.
 

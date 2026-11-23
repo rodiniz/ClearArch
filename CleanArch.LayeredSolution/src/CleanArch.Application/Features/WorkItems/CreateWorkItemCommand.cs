@@ -1,6 +1,8 @@
 using FluentValidation;
 using CleanArch.Application.Common.Interfaces;
 using CleanArch.Domain.Entities;
+using CleanArch.Domain.Interfaces.Repositories;
+using CleanArch.Domain.Interfaces.Repositories.Common;
 
 namespace CleanArch.Application.Features.WorkItems;
 
@@ -17,8 +19,9 @@ public sealed class CreateWorkItemCommandValidator : AbstractValidator<CreateWor
 }
 
 public sealed class CreateWorkItemCommandHandler(
-    IApplicationDbContext context,
-    IDateTimeProvider dateTimeProvider)
+    IWorkItemRepository repository,
+	IUnitOfWork unitOfWork,
+	IDateTimeProvider dateTimeProvider)
 {
     public async Task<WorkItemDto> Handle(CreateWorkItemCommand request, CancellationToken cancellationToken)
     {
@@ -34,10 +37,8 @@ public sealed class CreateWorkItemCommandHandler(
             CreatedAtUtc = dateTimeProvider.UtcNow,
             IsDone = false
         };
-
-        await context.Set<WorkItem>().AddAsync(item, cancellationToken);
-        await context.SaveChangesAsync(cancellationToken);
-
+		await repository.CreateAsync(item);
+		await unitOfWork.CompleteAsync();
         return new WorkItemDto(item.Id, item.Title, item.IsDone, item.CreatedAtUtc);
     }
 }

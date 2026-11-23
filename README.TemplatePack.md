@@ -1,6 +1,19 @@
 # CleanArch Template Pack
 
-This NuGet package contains the `CleanArch-layered` .NET solution template.
+Give your next .NET 10 service a head start with `CleanArch-layered`: a
+multi-project solution template with a sample work item feature and tools for
+building, validating, and testing APIs.
+
+## Meet the stack
+
+| Library | What it brings |
+| --- | --- |
+| [ASP.NET Core OpenAPI](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/overview) and [Scalar](https://scalar.com/) | OpenAPI documents and an interactive API reference in development. |
+| [Wolverine](https://wolverinefx.net/) | Local command and query handling, with optional Azure Service Bus and AWS SQS transports. |
+| [FluentValidation](https://docs.fluentvalidation.net/) | Readable validation rules integrated with Wolverine handlers. |
+| [Entity Framework Core](https://learn.microsoft.com/en-us/ef/core/) | Persistence abstractions and a migrations project; PostgreSQL is opt-in. |
+| [FluentResults](https://github.com/altmann/FluentResults) | Result types for expressing success and failure. |
+| [xUnit](https://xunit.net/), [NSubstitute](https://nsubstitute.github.io/), [AutoFixture](https://github.com/AutoFixture/AutoFixture), and [FluentAssertions](https://fluentassertions.com/) | Tests, dependency substitutes, generated test data, and expressive assertions. |
 
 ## Install from NuGet.org
 
