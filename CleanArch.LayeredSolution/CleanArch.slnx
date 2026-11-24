@@ -7,4 +7,7 @@
     <Project Path="src/CleanArch.Migrations/CleanArch.Migrations.csproj" />
     <Project Path="src/CleanArch.Unit/CleanArch.Unit.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="Directory.Packages.props" />
+  </Folder>
 </Solution>

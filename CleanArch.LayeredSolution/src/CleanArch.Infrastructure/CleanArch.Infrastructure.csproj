@@ -17,6 +17,7 @@
     <!--#if (UsePostgres) -->
     <PackageReference Include="Npgsql" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
+    <PackageReference Include="Scrutor" />
     <!--#endif -->
     <!--#if (UseAzureServiceBus) -->
     <PackageReference Include="WolverineFx.AzureServiceBus" />

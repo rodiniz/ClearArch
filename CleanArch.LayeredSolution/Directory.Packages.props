@@ -22,6 +22,7 @@
     <!--#endif -->
     <PackageVersion Include="NSubstitute" Version="*" />
     <PackageVersion Include="Scalar.AspNetCore" Version="*" />
+    <PackageVersion Include="Scrutor" Version="7.0.0" />
     <PackageVersion Include="WolverineFx" Version="*" />
     <!--#if (UseAzureServiceBus) -->
     <PackageVersion Include="WolverineFx.AzureServiceBus" Version="*" />
